@@ -29,7 +29,8 @@ program
 
         ticketTable(from, to, date, {
             allowTrainTypes,
-            through: program.through
+            through: program.through,
+            hasThrough: !!program.through
         });
     })
     .parse(process.argv);
