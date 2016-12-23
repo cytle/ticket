@@ -1,22 +1,11 @@
 'use strict';
 
-import request from 'request';
 import Table from 'cli-table2';
-import stationNames from '../data/stationNames';
 import chalk from 'chalk';
+import Promise from 'es6-promise';
 
-// 获取车次运行时间
-const getDuration = function (row) {
-    return row.lishi;
-    // const duration = row.lishi.replace(':', 'h') + 'm'
-    // if duration.startswith('00'):
-    //     return duration[4:]
-    // if duration.startswith('0'):
-    //     return duration[1:]
-    // return duration
-};
-
-const render = function ({ datas, searchDate }, { from, to, options }) {
+import requestTickets from './requestTickets';
+const render = function ({ datas, searchDate, from, to }, options) {
     // instantiate
     var table = new Table({
         head: '车次 出发/到达站 出发/到达时间 历时 一等坐 二等坐 软卧 硬卧 硬座 起售'.split(' ')
@@ -38,13 +27,19 @@ const render = function ({ datas, searchDate }, { from, to, options }) {
         // 车次
         row.station_train_code,
         // 出发、到达时间
-        ([chalk.yellow(row.from_station_name),
-                   chalk.green(row.to_station_name)]).join('->'),
+        ([
+            chalk.yellow(row.from_station_name),
+            row.throughInfo ? row.throughInfo.to_station_name : '',
+            chalk.green(row.to_station_name)
+        ]).join('->'),
         // 出发、到达站
-        ([chalk.yellow(row.start_time),
-                   chalk.green(row.arrive_time)]).join('->'),
+        ([
+            chalk.yellow(row.start_time),
+            row.throughInfo ? row.throughInfo.arrive_time : '',
+            chalk.green(row.arrive_time)
+        ]).join('->'),
         // 历时
-        getDuration(row),
+        row.lishi,
         // 一等坐
         row.zy_num,
         // 二等坐
@@ -68,29 +63,41 @@ const render = function ({ datas, searchDate }, { from, to, options }) {
         (filterTypes ? `筛选类型: ${filterTypes}` : '')
     );
 };
-const getStationName = name => stationNames[name];
+const commonTrains = (datas1, datas2) => {
+    // if (datas1.length > datas2.length) {
+    //     [datas2, datas1] = [datas1, datas2];
+    // }
+    const a = datas2.map(item => item.train_no);
+    return datas1.filter(item => {
+        const index = a.indexOf(item.train_no);
+        if (index === -1) {
+            return false;
+        }
+        item.throughInfo = datas2[index];
+
+        return true;
+    });
+};
 
 const ticketTable = function (from, to, date, options) {
-    const fromStation = getStationName(from);
-    const toStation = getStationName(to);
+    let requestTo = requestTickets(from, to, date);
+    if ('through' in options && options.through) {
+        requestTo = Promise
+            .all([
+                requestTo,
+                requestTickets(from, options.through, date)
+            ])
+            .then(([{ datas, searchDate }, { datas: throughDatas }]) =>
+                ({
+                    datas: commonTrains(datas, throughDatas),
+                    searchDate
+                }));
+    }
 
-    console.log('requesting tickets(from: %s, to: %s, date: %s)', from, to, date);
-    request.get({
-        uri: `https://kyfw.12306.cn/otn/lcxxcx/query?purpose_codes=ADULT&queryDate=${date}&from_station=${fromStation}&to_station=${toStation}`,
-        rejectUnauthorized: false
-    }, function (error, response, body) {
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-        const result = JSON.parse(body);
-        render(result.data, {
-            from,
-            to,
-            options
-        });
-    });
+    requestTo
+        .then(({ datas, searchDate }) =>
+            render({ datas, searchDate, from, to }, options))
+        .catch(console.log);
 };
 
 export default ticketTable;

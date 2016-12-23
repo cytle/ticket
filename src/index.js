@@ -20,13 +20,16 @@ program
     .option('-t, --te', '特快')
     .option('-k, --kuai', '快速')
     .option('-z, --zhi', '直达')
+    .option('--through <station name>', '途径站')
     .action((from, to, date) => {
+        // console.error(program.through);
         const allowTrainTypes = (['gao', 'dong', 'te', 'kuai', 'zhi'])
             .filter(t => t && program[t])
             .map(t => t[0].toLocaleLowerCase());
-        console.log(allowTrainTypes);
+
         ticketTable(from, to, date, {
-            allowTrainTypes
+            allowTrainTypes,
+            through: program.through
         });
     })
     .parse(process.argv);
