@@ -16,13 +16,25 @@ const getDuration = function (row) {
     // return duration
 };
 
-const render = function (data) {
+const render = function ({ datas, searchDate }, { from, to, options }) {
     // instantiate
     var table = new Table({
-        head: '车次 出发/到达站 出发/到达时间 历时 一等坐 二等坐 软卧 硬卧 硬座'.split(' ')
+        head: '车次 出发/到达站 出发/到达时间 历时 一等坐 二等坐 软卧 硬卧 硬座 起售'.split(' ')
         // colWidths: [100, 200]
     });
-    data = data.map(row => [
+    const allowTrainTypes = options.allowTrainTypes;
+    const filterTypes = allowTrainTypes.join(',');
+    // 过滤车次
+    if (allowTrainTypes.length > 0) {
+        datas = datas.filter(row =>
+            allowTrainTypes.indexOf(
+                row.station_train_code[0].toLocaleLowerCase()
+            ) !== -1
+        );
+    }
+
+    datas = datas
+    .map(row => [
         // 车次
         row.station_train_code,
         // 出发、到达时间
@@ -42,10 +54,19 @@ const render = function (data) {
         // 软坐
         row.yw_num,
         // 硬坐
-        row.yz_num
+        row.yz_num,
+        // 备注
+        row.note.replace('月', '/').replace('点', ':').replace(/分|起|售|日/g, '').replace('<br/>', ' ')
     ]);
-    table.push.apply(table, data);
+    table.push.apply(table, datas);
     console.log(table.toString());
+    console.log('  %s -> %s %s 共计%d个车次 %s',
+        from,
+        to,
+        chalk.bold.red('(' + searchDate.replace(/&nbsp;/g, ' ') + ')'),
+        datas.length,
+        (filterTypes ? `筛选类型: ${filterTypes}` : '')
+    );
 };
 const getStationName = name => stationNames[name];
 
@@ -64,7 +85,11 @@ const ticketTable = function (from, to, date, options) {
         }
 
         const result = JSON.parse(body);
-        render(result.data.datas);
+        render(result.data, {
+            from,
+            to,
+            options
+        });
     });
 };
 
