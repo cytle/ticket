@@ -6,11 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "babel-node src/index.js",
-    "watch": "babel-watch src/index.js",
     "refresh-data": "babel-node src/freshStationNames.js",
     "build": "babel src --out-dir lib"
   },
-  "author": "",
+  "bin": {
+    "tickets": "lib/index.js"
+  },
+  "author": "xsp",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.18.0",

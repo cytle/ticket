@@ -26,11 +26,11 @@ const render = function (data) {
         // 车次
         row.station_train_code,
         // 出发、到达时间
-        ([chalk.green(row.from_station_name),
-                   chalk.red(row.to_station_name)]).join('->'),
+        ([chalk.yellow(row.from_station_name),
+                   chalk.green(row.to_station_name)]).join('->'),
         // 出发、到达站
-        ([chalk.green(row.start_time),
-                   chalk.red(row.arrive_time)]).join('->'),
+        ([chalk.yellow(row.start_time),
+                   chalk.green(row.arrive_time)]).join('->'),
         // 历时
         getDuration(row),
         // 一等坐
