@@ -3,6 +3,7 @@
 import request from 'request';
 import fs from 'fs';
 
+const dataPath = './data';
 request
     .get(
     {
@@ -22,6 +23,13 @@ request
         while ((matchs = regx.exec(body))) {
             names[matchs[2]] = matchs[1];
         }
-        fs.writeFile('./data/stationNames.json', JSON.stringify(names), 'utf8');
+        fs.stat(dataPath, function (err, stat) {
+            if (err == null) {
+                return;
+            }
+            fs.mkdirSync(dataPath);
+        });
+
+        fs.writeFile(dataPath + '/stationNames.json', JSON.stringify(names), 'utf8');
         console.info('success');
     });

@@ -1,20 +1,19 @@
+#!/usr/bin/env node
 'use strict';
 
-import request from 'request';
-import stationNames from '../data/stationNames';
+import ticketTable from './ticketTable';
+import program from 'commander';
 
-const fromStation = stationNames['beijingbei'];
-const toStation = stationNames['chongqingbei'];
-const date = '2016-12-30';
+program
+    .version('0.0.1')
+    .arguments('<from> <to> <date>')
+    .option('-g', '高铁')
+    .option('-d', '动车')
+    .option('-t', '特快')
+    .option('-k', '快速')
+    .option('-z', '直达')
+    .action((from, to, date) => {
+        ticketTable(from, to, date);
+    })
+    .parse(process.argv);
 
-request.get({
-    uri: `https://kyfw.12306.cn/otn/lcxxcx/query?purpose_codes=ADULT&queryDate=${date}&from_station=${fromStation}&to_station=${toStation}`,
-    rejectUnauthorized: false
-}, function (error, response, body) {
-    if (error) {
-        console.error(error);
-        return;
-    }
-    const result = JSON.parse(body);
-    console.log(result.data.datas);
-});
