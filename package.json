@@ -1,7 +1,7 @@
 {
   "name": "tickets",
   "version": "1.0.0",
-  "description": "",
+  "description": "查询12306车票信息,可筛选过站",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,7 +11,7 @@
     "build": "babel src --out-dir lib"
   },
   "bin": {
-    "tickets": "lib/index.js"
+    "ticket": "lib/index.js"
   },
   "author": "xsp",
   "license": "ISC",
