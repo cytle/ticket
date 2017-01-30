@@ -1,12 +1,17 @@
 import chalk from 'chalk';
 
-import stationNames from '../data/stationNames';
+let stationNames;
 
-const isString = s => typeof s === 'string';
-const getStationName = name => stationNames[name];
+export const isString = s => typeof s === 'string';
+export const getStationName = name => {
+    if (!stationNames) {
+        stationNames = require('data/stationNames');
+    }
+    return stationNames[name];
+};
 
 // 格式化一行数据
-const formatRow = row => [
+export const formatRow = row => [
     // 车次
     row.station_train_code,
     // 出发、到达时间
@@ -38,8 +43,3 @@ const formatRow = row => [
     ? row.note.replace('月', '/').replace('点', ':').replace(/分|起|售|日/g, '').replace('<br/>', ' ')
     : ''
 ];
-
-export {
-    getStationName,
-    formatRow
-};

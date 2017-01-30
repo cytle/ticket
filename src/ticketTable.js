@@ -1,5 +1,3 @@
-'use strict';
-
 import requestTickets from './requestTickets';
 import { render } from './middlewares';
 

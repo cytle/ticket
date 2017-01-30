@@ -1,13 +1,9 @@
-#!/usr/bin/env node
-'use strict';
-
-import ticketTable from './ticketTable';
 import program from 'commander';
-import refreshStationNames from './refreshStationNames';
-import packageJson from '../package.json';
+import { refresh as refreshStationNames } from './stationNames';
+import ticketTable from './ticketTable';
 
 program
-    .description('查询12306车票信息,可筛选过站.\n  eg: ticket beijing hanzhou 2017-02-28')
+    .description('查询12306车票信息,可筛选过站.\n  eg: ticket beijing hangzhou 2017-02-28')
     .arguments('<from> <to> <date>')
     .option('-g, --gao', '高铁')
     .option('-d, --dong', '动车')
@@ -17,7 +13,7 @@ program
     .option('--through <station name>', '途径站')
     .action((from, to, date) => {
         const allowTrainTypes = (['gao', 'dong', 'te', 'kuai', 'zhi'])
-            .filter(t => t && program[t])
+            .filter(t => t in program)
             .map(t => t[0].toLocaleLowerCase());
 
         refreshStationNames()
@@ -32,5 +28,5 @@ program
         )
         .catch(console.error);
     })
-    .version(packageJson.version)
+    .version('1.0.0')
     .parse(process.argv);

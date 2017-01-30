@@ -1,9 +1,8 @@
-'use strict';
-
 import request from 'request';
 import Promise from 'es6-promise';
 
 import { getStationName } from './helpers';
+
 const requestTickets = (from, to, date) =>
     new Promise((resolve, reject) => {
         const fromStation = getStationName(from);
