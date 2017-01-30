@@ -2,6 +2,7 @@ import chalk from 'chalk';
 
 import stationNames from '../data/stationNames';
 
+const isString = s => typeof s === 'string';
 const getStationName = name => stationNames[name];
 
 // 格式化一行数据
@@ -33,7 +34,9 @@ const formatRow = row => [
     // 硬坐
     row.yz_num,
     // 备注
-    row.note.replace('月', '/').replace('点', ':').replace(/分|起|售|日/g, '').replace('<br/>', ' ')
+    isString(row.note)
+    ? row.note.replace('月', '/').replace('点', ':').replace(/分|起|售|日/g, '').replace('<br/>', ' ')
+    : ''
 ];
 
 export {

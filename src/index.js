@@ -3,17 +3,11 @@
 
 import ticketTable from './ticketTable';
 import program from 'commander';
-// import freshStations from './freshStationNames';
+import refreshStationNames from './refreshStationNames';
+import packageJson from '../package.json';
 
 program
-    .version('0.0.1');
-
-// program
-//     .command('refresh-stations', '刷新车站名称数据')
-//     .arguments('')
-//     .action(freshStations);
-
-program
+    .description('查询12306车票信息,可筛选过站.\n  eg: ticket beijing hanzhou 2017-02-28')
     .arguments('<from> <to> <date>')
     .option('-g, --gao', '高铁')
     .option('-d, --dong', '动车')
@@ -22,15 +16,21 @@ program
     .option('-z, --zhi', '直达')
     .option('--through <station name>', '途径站')
     .action((from, to, date) => {
-        // console.error(program.through);
         const allowTrainTypes = (['gao', 'dong', 'te', 'kuai', 'zhi'])
             .filter(t => t && program[t])
             .map(t => t[0].toLocaleLowerCase());
 
-        ticketTable(from, to, date, {
-            allowTrainTypes,
-            through: program.through,
-            hasThrough: !!program.through
-        });
+        refreshStationNames()
+        .then(
+            () => {
+                ticketTable(from, to, date, {
+                    allowTrainTypes,
+                    through: program.through,
+                    hasThrough: !!program.through
+                });
+            }
+        )
+        .catch(console.error);
     })
+    .version(packageJson.version)
     .parse(process.argv);
