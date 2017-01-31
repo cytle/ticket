@@ -12,7 +12,8 @@ module.exports = {
         }
     ],
     entry: {
-        ticket: './src/index.js'
+        ticket: './src/index.js',
+        refreshData: './src/refreshData.js'
     },
     output: {
         path: path.resolve(__dirname, 'lib'),

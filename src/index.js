@@ -1,5 +1,4 @@
 import program from 'commander';
-import { refresh as refreshStationNames } from './stationNames';
 import ticketTable from './ticketTable';
 
 program
@@ -16,17 +15,11 @@ program
             .filter(t => t in program)
             .map(t => t[0].toLocaleLowerCase());
 
-        refreshStationNames()
-        .then(
-            () => {
-                ticketTable(from, to, date, {
-                    allowTrainTypes,
-                    through: program.through,
-                    hasThrough: !!program.through
-                });
-            }
-        )
-        .catch(console.error);
+        ticketTable(from, to, date, {
+            allowTrainTypes,
+            through: program.through,
+            hasThrough: !!program.through
+        });
     })
     .version('1.0.0')
     .parse(process.argv);
