@@ -1,6 +1,6 @@
 {
   "name": "cticket",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "查询12306车票信息,可筛选过站",
   "main": "lib/ticket.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "bin": {
-    "ticket": "bin/ticket.js"
+    "cticket": "bin/ticket.js"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
