@@ -7,65 +7,56 @@ import fs from 'fs';
 import Promise from 'es6-promise';
 import path from 'path';
 
-const dataPath = path.resolve('data');
+const filePath = path.resolve('data', 'stationNames.json');
 
-export const getPath = () => path.resolve(dataPath, 'stationNames.json');
-
-export const refresh = () =>
-    new Promise((resolve, reject) => {
-        fs.stat(dataPath, function (err, stat) {
-            if (err === null) {
-                resolve();
-                return;
-            }
-            fs.mkdir(dataPath, function (err2) {
-                if (err2) {
-                    reject(err2);
-                    return;
-                }
-                resolve();
-            });
-        });
-        // TODO 判断是否已经存在stationNames
-        request
-            .get(
-            {
-                uri: 'https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.8968',
-                rejectUnauthorized: false
-            },
-            function (error, response, body) {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-                function writeFile () {
-                    const regx = /([A-Z]+)\|([a-z]+)/g;
-                    const names = {};
-                    let matchs;
-
-                    while ((matchs = regx.exec(body))) {
-                        names[matchs[2]] = matchs[1];
-                    }
-
-                    fs.writeFile(getPath(), JSON.stringify(names), (err) =>
-                        err ? reject(error) : resolve(names)
-                    );
-                }
-
-                fs.stat(dataPath, function (err, stat) {
-                    if (err === null) {
-                        writeFile();
-                        return;
-                    }
-                    fs.mkdir(dataPath, function (err2) {
-                        if (err2) {
-                            reject(err2);
-                            return;
-                        }
-                        writeFile();
-                    });
-                });
-            });
+/**
+ * 创建一个文件夹
+ * @param  {String} dir 需要创建的文件夹地址
+ * @return {Object}     返回一个promise对象
+ */
+const mkdir = dir => new Promise((resolve, reject) =>
+    fs.stat(dir, (error, stat) => {
+        error
+        ? fs.mkdir(dir, err =>
+            err
+            ? reject(err)
+            : resolve()
+        )
+        : resolve();
     })
-    .then();
+);
+
+/**
+ * 请求并且写入车站信息
+ * @param  {String} writeFilePath 写入文件的路径
+ * @return {Object}               返回一个promise对象
+ */
+const requestAndWriteStationNames = writeFilePath => new Promise((resolve, reject) =>
+    request
+        .get(
+        {
+            uri: 'https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.8968',
+            rejectUnauthorized: false
+        },
+        (error, response, body) => {
+            if (error) return reject(error);
+
+            const regx = /([A-Z]+)\|([a-z]+)/g;
+            const names = {};
+            let matchs;
+
+            while ((matchs = regx.exec(body))) {
+                names[matchs[2]] = matchs[1];
+            }
+
+            fs.writeFile(writeFilePath, JSON.stringify(names), (err) =>
+                err
+                ? reject(err)
+                : resolve()
+            );
+        })
+);
+
+export const refresh = () => mkdir(path.dirname(filePath))
+    .then(() => requestAndWriteStationNames(filePath));
 
