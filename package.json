@@ -1,6 +1,6 @@
 {
   "name": "cticket",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "查询12306车票信息,可筛选过站",
   "main": "lib/ticket.js",
   "scripts": {
