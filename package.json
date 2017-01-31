@@ -1,6 +1,6 @@
 {
-  "name": "ticket",
-  "version": "1.0.0",
+  "name": "cticket",
+  "version": "0.0.1",
   "description": "查询12306车票信息,可筛选过站",
   "main": "lib/ticket.js",
   "scripts": {
@@ -11,8 +11,6 @@
   "bin": {
     "ticket": "bin/ticket.js"
   },
-  "author": "xsp",
-  "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.21.0",
@@ -30,5 +28,20 @@
     "commander": "^2.9.0",
     "es6-promise": "^4.0.5",
     "request": "^2.79.0"
+  },
+  "homepage": "https://github.com/cytle/ticket#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/cytle/ticket.git"
+  },
+  "keywords": [
+    "12306",
+    "ticket",
+    "火车票"
+  ],
+  "author": "xsp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cytle/ticket/issues"
   }
 }
