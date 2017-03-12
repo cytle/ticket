@@ -35,7 +35,7 @@ Example:
 $ cticket beijin hangzhou 2017-04-10 --through shanghai
 ```
 
-[demo](!https://raw.githubusercontent.com/cytle/ticket/f596379c0204d0f7fea8111c3b254364c182d73a/images/demo.png)
+![demo](https://raw.githubusercontent.com/cytle/ticket/f596379c0204d0f7fea8111c3b254364c182d73a/images/demo.png)
 
 # TODO
 
