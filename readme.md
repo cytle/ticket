@@ -34,3 +34,14 @@ Example:
 ```shell
 $ cticket beijin hangzhou 2017-04-10 --through shanghai
 ```
+
+[demo](!)
+
+# TODO
+
+- 查询余票接口容灾方案
+- 监听余票
+
+# 注意
+
+12306api地址可能会更换,引起报错
