@@ -24,11 +24,13 @@ const requestTickets = (from, to, date) =>
             return;
         }
 
+        // 请求地址
         // const requestUrl = `https://kyfw.12306.cn/otn/lcxxcx/query?purpose_codes=ADULT&queryDate=${date}&from_station=${fromStation}&to_station=${toStation}`;
-        const requestUrl = `https://kyfw.12306.cn/otn/leftTicket/queryZ?leftTicketDTO.train_date=${date}&leftTicketDTO.from_station=${fromStation}&leftTicketDTO.to_station=${toStation}&purpose_codes=ADULT`;
+        const requestUrl = `https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date=${date}&leftTicketDTO.from_station=${fromStation}&leftTicketDTO.to_station=${toStation}&purpose_codes=ADULT`;
+        // const requestUrl = `https://kyfw.12306.cn/otn/leftTicket/queryZ?leftTicketDTO.train_date=${date}&leftTicketDTO.from_station=${fromStation}&leftTicketDTO.to_station=${toStation}&purpose_codes=ADULT`;
 
         console.log('requesting tickets(from: %s, to: %s, date: %s)', from, to, date);
-        console.log(requestUrl);
+        // console.log(requestUrl);
 
         request.get({
             uri: requestUrl,
@@ -43,6 +45,15 @@ const requestTickets = (from, to, date) =>
             }
 
             const result = JSON.parse(body);
+
+            if (!result.data) {
+                reject({
+                    msg: '获取车票接口有误',
+                    data: result
+                });
+                return;
+            }
+
             // const data = result.data;
             const data = {
                 searchDate: date,

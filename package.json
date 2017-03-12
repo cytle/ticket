@@ -1,11 +1,10 @@
 {
   "name": "cticket",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "查询12306车票信息,可筛选过站",
   "main": "lib/ticket.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --inline --hot --no-info",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules && node ./bin/refreshData.js"
   },
   "bin": {
